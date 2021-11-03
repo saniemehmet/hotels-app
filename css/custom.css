@@ -1,0 +1,7 @@
+nav {
+    background-image: url("../images/sea.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 38rem;
+}
