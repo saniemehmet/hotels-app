@@ -18,7 +18,7 @@
   </head>
   <body>
       <div class="header">
-        <nav class="navbar navbar-expand-lg navbar-light d-flex flex-column">
+        <nav class="navbar navbar-expand-lg navbar-light d-flex flex-column" style="height: 38rem;">
           <div class="container-fluid align-items-start">
             <a class="navbar-brand" href="#">
               Hotels.com
@@ -29,10 +29,10 @@
             <div class="collapse navbar-collapse d-flex justify-content-md-center" id="navbarText">
               <ul class="navbar-nav">
                 <li class="nav-item">
-                  <a class="nav-link active me-2" aria-current="page" href="#">Home</a>
+                  <a class="nav-link active" aria-current="page" href="index.html">Home</a>
                 </li>
-                <li class="nav-item me-2">
-                  <a class="nav-link" href="#">Hotels</a>
+                <li class="nav-item">
+                  <a class="nav-link" href="hotels.html">Hotels</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">Contacts</a>
@@ -51,21 +51,25 @@
           <div class="container-fluid justify-content-center align-items-end mb-5">
             <div class="form-group has-search">
               <span class="fas fa-map-marker-alt form-control-feedback"></span>
-              <input type="text" class="form-control" placeholder="Location">
+              <input id="location" type="text" class="form-control locationAutocomplete" autocomplete="off" placeholder="Location">
             </div>
-            <div class="form-group d-flex row has-search ms-2 me-0">
+            <!-- <div class="form-group d-flex row has-search ms-2 me-0"> -->
+              
+            <div class="form-group d-flex row has-search">
               <span class="far fa-calendar-alt form-control-feedback"></span>
               <input id="date-from" type="text" class="form-control">
             </div>
-            <div class="form-group d-flex row has-search ms-2 me-0">
+            <!-- <div class="form-group d-flex row has-search ms-2 me-0"> -->
+            <div class="form-group d-flex row has-search">
               <span class="far fa-calendar-alt form-control-feedback"></span>
               <input id="date-to" type="text" class="form-control">
             </div>
             <div class="d-flex flex-column">
-              <div class="form-group d-flex row has-search ms-2 me-0">
-                <input id="adults-and-room" value="1 adult | 1 room" onkeypress="return false;" type="text" class="form-control" data-bs-toggle="collapse" href="#collapseAdultsAndRoom" role="button" aria-expanded="false" aria-controls="collapseAdultsAndRoom">
+              <!-- <div class="form-group d-flex row has-search ms-2 me-0"> -->
+              <div class="form-group d-flex row has-search">
+                <input id="adults-and-room" value="1 adult | 1 room" onkeypress="return false;" type="text" class="form-control text-center" data-bs-toggle="collapse" href="#collapseAdultsAndRoom" role="button" aria-expanded="false" aria-controls="collapseAdultsAndRoom">
               </div>
-              <div class="ms-2 collapse" id="collapseAdultsAndRoom">
+              <div class="collapse" id="collapseAdultsAndRoom" style="margin: 0 0.2rem 0 0.2rem;">
                 <div class="d-flex flex-row justify-content-center align-items-center card card-body">
                   <span>Adults</span>
                   <div class="d-flex justify-content-end">
@@ -81,7 +85,7 @@
               </div>
             </div>
             <div>
-              <button type="button" class="btn btn-info ms-2 w-100">Search</button>
+              <button id="search-hotels" type="button" class="btn btn-info ms-2 w-100">Search</button>
             </div>
           </div>
         </nav>
