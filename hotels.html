@@ -52,7 +52,7 @@
           <div class="container">
             <div class="row mt-3">
                 <div class="col-12 col-md-3">
-                  <div class="card mt-2 mt-md-0">
+                  <div class="card mt-2 mt-md-0 filters-card text-white">
                     <div class="card-body">
                       <h5 class="card-title mb-3">Filter by</h5>
                       <form>
@@ -70,31 +70,31 @@
                         <div class="mb-3">
                           <label class="form-label"><b>Your budget (per night)</b></label>
                           <div class="form-check">
-                            <input class="form-check-input star-rating-checkbox" type="checkbox" value="price_category::50" id="price_category::50">
+                            <input class="form-check-input budget-checkbox" type="checkbox" value="price_category::50" id="price_category::50">
                             <label class="form-check-label" for="price_category::50">
                               € 0 - € 50 
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input star-rating-checkbox" type="checkbox" value="price_category::100" id="price_category::100">
+                            <input class="form-check-input budget-checkbox" type="checkbox" value="price_category::100" id="price_category::100">
                             <label class="form-check-label" for="price_category::100">
                               € 50 - € 100
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input star-rating-checkbox" type="checkbox" value="price_category::150" id="price_category::150">
+                            <input class="form-check-input budget-checkbox" type="checkbox" value="price_category::150" id="price_category::150">
                             <label class="form-check-label" for="price_category::150">
                               € 100 - € 150
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input star-rating-checkbox" type="checkbox" value="price_category::200" id="price_category::200">
+                            <input class="form-check-input budget-checkbox" type="checkbox" value="price_category::200" id="price_category::200">
                             <label class="form-check-label" for="price_category::200">
                               € 150 - € 200
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input star-rating-checkbox" type="checkbox" value="price_category::250" id="price_category::250">
+                            <input class="form-check-input budget-checkbox" type="checkbox" value="price_category::250" id="price_category::250">
                             <label class="form-check-label" for="price_category::250">
                               € 200 + 
                             </label>
@@ -103,14 +103,14 @@
                         <div class="mb-3">
                           <label class="form-label"><b>Free cancellation</b></label>
                           <div class="form-check">
-                            <input class="form-check-input" type="radio" name="free-cancellation" value="free_cancellation::1" id="free-cancellation">
+                            <input class="form-check-input" type="radio" name="free-cancellation" value="yes" id="free-cancellation">
                             <label class="form-check-label" for="free-cancellation">
                               Yes
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input" type="radio" name="no-free-cancellation" id="no-free-cancellation">
-                            <label class="form-check-label" for="no-free-cancellation">
+                            <input class="form-check-input" type="radio" name="free-cancellation" value="no" id="free-cancellation">
+                            <label class="form-check-label" for="free-cancellation">
                               No
                             </label>
                           </div>
@@ -176,6 +176,12 @@
                             </label>
                           </div>
                           <div class="form-check">
+                            <input class="form-check-input rating-checkbox" type="checkbox" value="reviewscorebuckets::90" id="superb-review">
+                            <label class="form-check-label" for="superb-review">
+                              Superb: 9+
+                            </label>
+                          </div>
+                          <div class="form-check">
                             <input class="form-check-input rating-checkbox" type="checkbox" value="reviewscorebuckets::999" id="no-rating-review">
                             <label class="form-check-label" for="no-rating-review">
                               No rating
@@ -222,7 +228,10 @@
                             </label>
                           </div>
                         </div>
-                          <button id="find-hotels" type="button" class="btn btn-primary">Search</button>
+                        <div class="d-flex justify-content-center">
+                          <button id="find-hotels" type="button" class="btn">Search</button>
+                        </div>
+                          
                       </form>
                     </div>
                 </div>           
@@ -244,9 +253,9 @@
                           </div>
                           <hr/>
                           <div id="hotel-list" class="row">
+                            <!-- <div class="row row-cols-1 row-cols-md-2" id="hotel-list"></div> -->
                             
                           </div>
-    
                         </div>
                     </div>
                 </div>
@@ -265,14 +274,14 @@
     <script src="js/custom.js"></script>
     <script src="js/hotels.js"></script>
 
-    <div id="hotel-list-template" class="d-none">
-      <div class="card mt-2 mt-md-0">
-        <div class="card-body row">
-          <div class="col-md-3">
-            <img class="hotel-image img-thumbnail rounded ">
+    <div id=hotel-list-template class="d-none">
+      <div class="card mb-3">
+        <div class="row g-2">
+          <div class="col-md-4 align-self-center">
+            <img class="img-fluid rounded-start hotel-image">
           </div>
-          <div class="col">
-            <div class="row">
+          <div class="col-md-8">
+            <div class="card-body row">
               <div class="col-sm col-md-8">
                 <h5 class="hotel-name d-inline"></h5>
                 <div class="hotel-class d-inline">
@@ -280,28 +289,18 @@
                 <div>
                   <h6 class="hotel-city d-inline"></h6>
                   <p class="text-muted d-inline">
-                    <small class="hotel-distance-to-center">
-
-                    </small>
+                    <small class="hotel-distance-to-center"></small>
                   </p>
                   <hr>
-                  <p class="card-text hotel-room-info">
-                    
+                  <p class="card-text hotel-room-info"></p>
+                  <p class="card-text text-success">
+                    <strong class="hotel-breakfast-info"></strong>
                   </p>
-                  <p class="card-text hotel-breakfast-info">
-                    
-                  </p>
-                  <p class="card-text hotel-cancellation-info d-inline text-success">
-                    
-                  </p>
-                  <p class="card-text hotel-prepayment-info d-inline text-success">
-                    
-                  </p>
+                  <p class="card-text hotel-cancellation-info d-inline text-success"></p>
+                  <p class="card-text hotel-prepayment-info d-inline text-success"></p>
                   <p class="card-text d-inline text-danger">
                     <br>
-                    <small class="hotel-urgency-message">
-
-                    </small>
+                    <small class="hotel-urgency-message"></small>
                   </p>
                 </div>
               </div>
@@ -332,7 +331,56 @@
                   </div>
                 </div>
               </div>
+            </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="hotel-grid-template" class="d-none">
+      <div class="col mt-2">
+        <div class="card h-100">
+          <div>
+            
+          </div>
+          <img class="hotel-image card-img-top">
+          <!-- style="height: 187px; width: 281px;" -->
+          <div class="card-body">
+            <div class="d-flex row">
+              <div class="col-md-10"> 
+                <h6 class="hotel-name d-inline"></h6>
+                <div class="hotel-class d-inline small"></div>
+              </div>
+              <div class="col-md align-self-center hotel-review-score ms-auto small text-white text-center rounded p-2">9.8</div>
+            </div>
+            
+            <div class="card-text">
+              <div class="d-flex">
+                <p class="hotel-city small"></p>
+                <p class="text-muted hotel-distance-to-center small"></p>
+              </div>
+              <hr>
+              <p class="card-text hotel-room-info small">
+              </p>
+            
+              <div class="align-self-center text-muted text-end">
+                <small class="hotel-nights-and-adults"></small>
+              </div>
+              <div class="text-end">
+                <h4 class="hotel-price-per-night"></h4>
+                <p class="text-muted">
+                  <small>
+                    Inlude taxes and charges
+                  </small>
+                </p>
+                <p class="card-text text-success small">
+                  <strong class="hotel-includes-info small"></strong>
+                </p>
+              </div>
+              <div class="d-flex justify-content-end">
+                <a class="btn btn-outline-dark book-button" href="#" role="button">See details</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,3 +1,6 @@
+let view = 'list';
+let hotels = []
+
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split('&'),
@@ -14,7 +17,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
     return false;
 };
 
-function getParamsForHotelSearch(){
+function getInitParams(){
     return {
         "units": "metric",
         "order_by": "popularity",
@@ -26,10 +29,48 @@ function getParamsForHotelSearch(){
         "locale": "en-gb",
         "dest_type": getUrlParameter('dest_type'),
         "dest_id": getUrlParameter('dest_id')
-    };
-};
+    }
+}
 
-let hotels = []
+function getParamsFromFilters(){
+    const order_by = $('#order-by-select').val();
+    const budget = [];
+    $('.budget-checkbox:checked').each((index, el) => {
+        budget.push(el.value);
+    })
+    const popularFilters = [];
+    $('.popular-filters-checkbox:checked').each((index, el) => {
+        popularFilters.push(el.value);
+    })
+    const rating = [];
+    $('.rating-checkbox:checked').each((index, el) => {
+        rating.push(el.value);
+    })
+    const classCheckboxElements = [];
+    $('.class-checkbox:checked').each((index, el) => {
+        classCheckboxElements.push(el.value);
+    })
+
+    let freeCancellation = $('#free-cancellation:checked').val();
+    if(freeCancellation == "yes"){
+        popularFilters.push("free_cancellation::1");
+    }
+    
+    const filter_results = [...budget, ...popularFilters, ...rating, ...classCheckboxElements].join();
+    let initParams = getInitParams();
+    delete initParams.order_by;
+    var params = {};
+    if(filter_results != ""){
+        console.log("sega tuk");
+        params = {"order_by": order_by, ...initParams, "categories_filter_ids":filter_results};
+    }
+    else{
+        console.log("else")
+        params = {"order_by": order_by, ...initParams};
+    }
+    console.log("params from filters", params);
+    return params;
+};
 
 function getHotels(params = {}) {
 
@@ -62,6 +103,12 @@ function getHotels(params = {}) {
 
 function renderHotelsList(){
     $hotelList = $('#hotel-list');
+    if(view === 'grid'){
+        $('#hotel-list').attr('class', "row row-cols-1 row-cols-md-3");
+    }
+    else{
+        $('#hotel-list').attr('class', "row");
+    }
     $hotelList.empty();
     console.log(hotels);
     hotels.forEach(hotel => {
@@ -73,14 +120,21 @@ function renderHotelsList(){
 
 
 function getHotelTemplate(hotel){
-    const templateSelector = `#hotel-list-template`;
+    const templateSelector = `#hotel-${view}-template`;
     const $template = $($(templateSelector).html());
     $template.find('.hotel-image').attr('src', hotel.max_photo_url);
     $template.find('.hotel-image').attr('alt', hotel.hotel_name);
     $template.find('.hotel-name').text(hotel.hotel_name);
     let starsIcons = "";
-    for(let i=0;i<parseInt(hotel.class);i++){
-        starsIcons += '<i class=\"fas fa-star\" style="\color:#FDCC0D;\"></i>';
+    if(view == "grid"){
+        for(let i=0;i<parseInt(hotel.class);i++){
+            starsIcons += '<i class=\"fas fa-star small\" style=\"color:#FDCC0D;\"></i>';
+        }
+    }
+    else{
+        for(let i=0;i<parseInt(hotel.class);i++){
+            starsIcons += '<i class=\"fas fa-star\" style="\color:#FDCC0D;\"></i>';
+        }
     }
     $template.find('.hotel-class').append(starsIcons);
     $template.find('.hotel-city').text(hotel.city);
@@ -93,22 +147,31 @@ function getHotelTemplate(hotel){
     
     $template.find('.hotel-room-info').append(hotel.unit_configuration_label);
     
-    $template.find('.hotel-breakfast-info').text(hotel.ribbon_text);
-    if(parseInt(hotel.is_free_cancellable) == 1){
-        $template.find('.hotel-cancellation-info').text("Free cancellation");
+    if(view == "grid"){
+        if(typeof hotel.ribbon_text !== "undefined"){
+            $template.find('.hotel-includes-info').append(hotel.ribbon_text + ((hotel.is_free_cancellable==1)?"<br>Free cancellation":"")+((hotel.is_no_prepayment_block==1)?"<br> No prepayment needed":""));
+        }
+        else{
+            $template.find('.hotel-includes-info').append(((hotel.is_free_cancellable==1)?"Free cancellation":"")+((hotel.is_no_prepayment_block==1)?"<br> No prepayment needed":""));
+        }    
     }
-    if(parseInt(hotel.is_no_prepayment_block) == 1){
-        $template.find('.hotel-prepayment-info').text("• No prepayment needed");
+    else{
+        $template.find('.hotel-breakfast-info').text(hotel.ribbon_text);
+        if(parseInt(hotel.is_free_cancellable) === 1){
+            $template.find('.hotel-cancellation-info').text("Free cancellation");
+        }
+        if(parseInt(hotel.is_no_prepayment_block) === 1){
+            $template.find('.hotel-prepayment-info').text("• No prepayment needed");
+        }
+        $template.find('.hotel-urgency-message').text(hotel.urgency_message);
     }
-    $template.find('.hotel-urgency-message').text(hotel.urgency_message);
-
     $template.find('.hotel-reviw-score-word').text(hotel.review_score_word);
     $template.find('.hotel-review-count').text(hotel.review_nr + " reviews");
     $template.find('.hotel-review-score').text(hotel.review_score);
     let dateFrom = getUrlParameter('checkin');
     let dateto = getUrlParameter('checkout');
     let nights = moment(dateto).diff(moment(dateFrom),'days');
-    console.log("nights", nights);
+
     let adults = getUrlParameter('adults');
     if(nights > 1 && adults > 1){
         $template.find('.hotel-nights-and-adults').text(`${nights} nights, ${adults} adults`); 
@@ -128,6 +191,25 @@ function getHotelTemplate(hotel){
     return $template;
 }
 
-getParamsForHotelSearch();
+$('#grid-view').click(e => {
+    view = 'grid';
+    $(e.currentTarget).addClass('btn-primary').removeClass('btn-outline-primary');
+    $('#list-view').addClass('btn-outline-primary').removeClass('btn-primary');
+    renderHotelsList();
+})
 
-getHotels(this.getParamsForHotelSearch());
+$('#list-view').click(e => {
+    view = 'list';
+    $(e.currentTarget).addClass('btn-primary').removeClass('btn-outline-primary');
+    $('#grid-view').addClass('btn-outline-primary').removeClass('btn-primary');
+    console.log("clicked");
+    renderHotelsList();
+})
+
+$('#find-hotels').click(()=> {
+    getHotels(this.getParamsFromFilters());
+})
+
+// getParamsFromFilters();
+
+getHotels(this.getInitParams());
