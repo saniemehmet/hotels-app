@@ -83,3 +83,8 @@ ul>li{
 #find-hotels{
   background-color: #ED8975;
 }
+.view-btn{
+  background-color: #ED8975;
+  border-radius: 0.1rem;
+  border-color: black;
+}

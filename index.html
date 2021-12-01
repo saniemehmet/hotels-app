@@ -41,42 +41,45 @@
             </div>
             <div class="align-self-center">
               <span class="navbar-text">
-                Login
+                Currency
               </span>
             </div>
           </div>
           <div class="slogan container-fluid justify-content-center mb-auto">
             <h1 id="animated-h1">Stay once, carry memories forever</h1>
           </div>
-          <div class="container-fluid justify-content-center align-items-end mb-5">
-            <div class="form-group has-search">
+          <form class="container-fluid justify-content-center align-items-end mb-5 requires-validation" novalidate>
+            <div class="form-group has-search needs-validation">
               <span class="fas fa-map-marker-alt form-control-feedback"></span>
-              <input id="location" type="text" class="form-control locationAutocomplete" autocomplete="off" placeholder="Location">
+              <input id="location" type="text" class="form-control" placeholder="Location" required>
+              <div class="invalid-feedback">
+                Please choose a location.
+              </div>
             </div>
               
             <div class="form-group d-flex row has-search">
               <span class="far fa-calendar-alt form-control-feedback"></span>
-              <input id="date-from" type="text" class="form-control" onkeypress="return false;">
+              <input id="date-from" type="text" class="form-control" onkeypress="return false;" required>
             </div>
             <div class="form-group d-flex row has-search">
               <span class="far fa-calendar-alt form-control-feedback"></span>
-              <input id="date-to" type="text" class="form-control" onkeypress="return false;">
+              <input id="date-to" type="text" class="form-control" onkeypress="return false;" required>
             </div>
             <div class="d-flex flex-column">
               <div class="form-group d-flex row has-search">
-                <input id="adults-and-room" value="1 adult | 1 room" onkeypress="return false;" type="text" class="form-control text-center" data-bs-toggle="collapse" href="#collapseAdultsAndRoom" role="button" aria-expanded="false" aria-controls="collapseAdultsAndRoom">
+                <input id="adults-and-room" value="1 adult | 1 room" onkeypress="return false;" type="text" class="form-control text-center" data-bs-toggle="collapse" href="#collapseAdultsAndRoom" role="button" aria-expanded="false" aria-controls="collapseAdultsAndRoom" required>
               </div>
               <div class="collapse" id="collapseAdultsAndRoom" style="margin: 0 0.2rem 0 0.2rem;">
                 <div class="d-flex flex-row justify-content-center align-items-center card card-body">
                   <span>Adults</span>
                   <div class="d-flex justify-content-end">
-                    <input id="adults" type="number" value="1" min="1" class="form-control text-center w-25 p-1" placeholder="Adults" onchange="setAdultsAndRoom();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
+                    <input id="adults" type="number" value="1" min="1" onkeypress="return false;" class="form-control text-center w-25 p-1" placeholder="Adults" onchange="setAdultsAndRoom();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
                   </div>
                 </div>
                 <div class="d-flex flex-row justify-content-center align-items-center card card-body">
                   <span>Room</span>
                   <div class="d-flex justify-content-end">
-                    <input id="rooms" type="number" value="1" min="1" class="form-control text-center w-25 p-1" placeholder="Room" onchange="setAdultsAndRoom();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
+                    <input id="rooms" type="number" value="1" min="1" onkeypress="return false;" class="form-control text-center w-25 p-1" placeholder="Room" onchange="setAdultsAndRoom();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
                   </div>
                 </div>
               </div>
@@ -84,7 +87,7 @@
             <div>
               <button id="search-hotels" type="button" class="btn btn-info ms-2 w-100">Search</button>
             </div>
-          </div>
+          </form>
         </nav>
         <div class="video-container">
           <video autoplay muted loop id="travel-video">
@@ -101,7 +104,8 @@
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js" integrity="sha256-hlKLmzaRlE8SCJC1Kw8zoUbU8BxA+8kR3gseuKfMjxA=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
 
-    <script src="js/custom.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/validator.js"></script>
     
   </body>
 </html>

@@ -1,5 +1,6 @@
 let view = 'list';
 let hotels = []
+let page_nr = 0; //default: 0
 
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),
@@ -27,6 +28,7 @@ function getInitParams(){
         "room_number": getUrlParameter('rooms'),
         "filter_by_currency":"EUR",
         "locale": "en-gb",
+        "page_number":page_nr,
         "dest_type": getUrlParameter('dest_type'),
         "dest_id": getUrlParameter('dest_id')
     }
@@ -61,21 +63,18 @@ function getParamsFromFilters(){
     delete initParams.order_by;
     var params = {};
     if(filter_results != ""){
-        console.log("sega tuk");
         params = {"order_by": order_by, ...initParams, "categories_filter_ids":filter_results};
     }
     else{
-        console.log("else")
         params = {"order_by": order_by, ...initParams};
     }
-    console.log("params from filters", params);
     return params;
 };
 
 function getHotels(params = {}) {
 
     const data = {...params}
-    console.log("params", data);
+    // console.log("params", data);
     const route = 'search';
     $.ajax({
         method: "GET",
@@ -193,21 +192,47 @@ function getHotelTemplate(hotel){
 
 $('#grid-view').click(e => {
     view = 'grid';
-    $(e.currentTarget).addClass('btn-primary').removeClass('btn-outline-primary');
-    $('#list-view').addClass('btn-outline-primary').removeClass('btn-primary');
+    $(e.currentTarget).addClass('view-btn').removeClass('btn-outline-dark');
+    $('#list-view').addClass('btn-outline-dark').removeClass('view-btn');
     renderHotelsList();
 })
 
 $('#list-view').click(e => {
     view = 'list';
-    $(e.currentTarget).addClass('btn-primary').removeClass('btn-outline-primary');
-    $('#grid-view').addClass('btn-outline-primary').removeClass('btn-primary');
-    console.log("clicked");
+    $(e.currentTarget).addClass('view-btn').removeClass('btn-outline-dark');
+    $('#grid-view').addClass('btn-outline-dark').removeClass('view-btn');
     renderHotelsList();
 })
 
 $('#find-hotels').click(()=> {
     getHotels(this.getParamsFromFilters());
+})
+
+$('.previous-page').on("click",function(){
+    page_nr = page_nr - 1;
+    if(page_nr < 0){
+        $('.previous-page').attr("class", "previous-page btn disabled");
+        page_nr = 0;
+    }
+    else{
+        let params = getParamsFromFilters();
+        params.page_number = page_nr;
+        $(".active-page").text(page_nr+1);
+        getHotels(params);
+    }
+})
+
+$('.next-page').on("click",function(){
+    console.log("page_nr next_page",page_nr);
+    page_nr = page_nr + 1;
+    console.log("page_nr next_page",page_nr);
+    let params = getParamsFromFilters();
+    params.page_number = page_nr;
+    $(".active-page").text(page_nr+1);
+    if(page_nr>=1){
+        $('.previous-page').attr("class", "previous-page btn");
+    }
+    getHotels(params);
 })
 
 // getParamsFromFilters();
