@@ -109,7 +109,7 @@ function renderHotelsList(){
         $('#hotel-list').attr('class', "row");
     }
     $hotelList.empty();
-    console.log(hotels);
+    // console.log(hotels);
     hotels.forEach(hotel => {
         const $template = getHotelTemplate(hotel);
         $hotelList.append($template);

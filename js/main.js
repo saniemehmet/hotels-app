@@ -2,6 +2,10 @@
 const baseUrl = 'https://booking-com.p.rapidapi.com/v1/hotels/';
 var locale = "en-gb";
 
+const travelAdvisoryInfoURL = 'https://www.travel-advisory.info/api';
+let travelAdvisoryInfo = [];
+let travelInfo = [];
+
 function setAdultsAndRoom() {
     let adults = $('#adults').val();
     let rooms = $('#rooms').val();
@@ -108,4 +112,53 @@ $('#search-hotels').click(async function () {
     return false;
 });
 
+function colorDivByRiskLevel(score){
+    if((score>=0) && (score<=2.5)){
+        $(".country-name").attr('class', 'country-name low-risk text-center');
+    }
+    else if((score >2.5) && (score <= 3.5)){
+        $(".country-name").attr('class', 'country-name medium-risk text-center');
+    }
+    else if((score >=3.5) && (score <= 4.5)){
+        $(".country-name").attr('class', 'country-name high-risk text-center');
+    }
+    else{
+        $(".country-name").attr('class', 'country-name extreme-warning text-center');
+    }
+}
+
+function getTravelAdvisoryInfo(){
+
+    $.ajax({
+        method: "GET",
+        async: true,
+        url: `${travelAdvisoryInfoURL}`,
+    })
+    .done(response => {
+        travelAdvisoryInfo = response.data;
+        travelInfo = Object.values(travelAdvisoryInfo);
+        $(".country-name").text(travelAdvisoryInfo["BG"]["name"]);
+        $(".advisory-message").text(travelAdvisoryInfo["BG"]["advisory"]["message"]);
+        colorDivByRiskLevel(travelAdvisoryInfo["BG"]["advisory"]["score"]);
+    })
+    .fail(response => {
+        console.log(response);
+    })
+    .always(() => {
+        console.log('ajax completed');
+    })
+}
+
 initDatePickers();
+getTravelAdvisoryInfo();
+
+setInterval(function() {
+    var rand = Math.floor(Math.random() * travelInfo.length);
+    // console.log(rand);
+    // console.log(travelInfo[rand]);
+    colorDivByRiskLevel(travelInfo[rand]["advisory"]["score"]);
+    $(".country-name").text(travelInfo[rand]["name"]);
+    $(".advisory-message").text(travelInfo[rand]["advisory"]["message"]);
+  }, 8000);
+
+

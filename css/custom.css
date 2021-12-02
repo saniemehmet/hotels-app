@@ -88,3 +88,16 @@ ul>li{
   border-radius: 0.1rem;
   border-color: black;
 }
+
+.extreme-warning{
+  background-color: #fc6876;
+}
+.high-risk{
+  background-color: #fff389;
+}
+.medium-risk{
+  background-color: #89dbff;
+}
+.low-risk{
+  background-color: #92f6af;
+}
