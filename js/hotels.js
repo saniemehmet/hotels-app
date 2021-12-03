@@ -1,6 +1,7 @@
 let view = 'list';
 let hotels = []
 let page_nr = 0; //default: 0
+let euroConversionRates = {}
 
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),
@@ -74,7 +75,6 @@ function getParamsFromFilters(){
 function getHotels(params = {}) {
 
     const data = {...params}
-    // console.log("params", data);
     const route = 'search';
     $.ajax({
         method: "GET",
@@ -89,7 +89,6 @@ function getHotels(params = {}) {
     .done(response => {
         $(".hotels-results").text(getUrlParameter('destination')+": "+response.total_count_with_filters+" properties found");
         hotels = response.result;
-        // console.log(hotels);
         renderHotelsList();
     })
     .fail(response => {
@@ -116,7 +115,23 @@ function renderHotelsList(){
     })
 }
 
-
+function getEURExchangeRate(){
+    $.ajax({
+        method: "GET",
+        async: true,
+        url: 'https://v6.exchangerate-api.com/v6/4c0b515b45ea357d785ed835/latest/EUR'
+    })
+    .done(response => {
+        euroConversionRates = response.conversion_rates;
+        console.log(euroConversionRates);
+    })
+    .fail(response => {
+        console.log(response);
+    })
+    .always(() => {
+        console.log('getEURExchangeRate ajax completed');
+    })
+}
 
 function getHotelTemplate(hotel){
     const templateSelector = `#hotel-${view}-template`;
@@ -184,7 +199,15 @@ function getHotelTemplate(hotel){
     else{
         $template.find('.hotel-nights-and-adults').text(`${nights} night, ${adults} adult`);  
     }
-    $template.find('.hotel-price-per-night').text(hotel.price_breakdown.all_inclusive_price + " " + hotel.price_breakdown.currency);
+    
+    let seletedCurrency = getUrlParameter('currency');
+    if(seletedCurrency == hotel.price_breakdown.currency){
+        $template.find('.hotel-price-per-night').text(hotel.price_breakdown.all_inclusive_price + " " + hotel.price_breakdown.currency);
+    }
+    else{
+        let price = Math.ceil(hotel.price_breakdown.all_inclusive_price / euroConversionRates[hotel.price_breakdown.currency]);
+        $template.find('.hotel-price-per-night').text(price + " EUR");
+    }
     
     $template.find('.book-button').attr('href', hotel.url);
     return $template;
@@ -236,5 +259,5 @@ $('.next-page').on("click",function(){
 })
 
 // getParamsFromFilters();
-
+getEURExchangeRate();
 getHotels(this.getInitParams());
