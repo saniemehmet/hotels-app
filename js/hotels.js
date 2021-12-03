@@ -1,3 +1,5 @@
+const euroExchangeRatesURL = 'https://v6.exchangerate-api.com/v6/4c0b515b45ea357d785ed835/latest/EUR';
+
 let view = 'list';
 let hotels = []
 let page_nr = 0; //default: 0
@@ -79,10 +81,10 @@ function getHotels(params = {}) {
     $.ajax({
         method: "GET",
         async: true,
-        url: `${baseUrl}${route}`,
+        url: `${baseHotelsUrl}${route}`,
         headers: {
-            'x-rapidapi-host': 'booking-com.p.rapidapi.com',
-            'x-rapidapi-key': '18478709b4msh25f760bdd13c2f9p19b5f2jsn61b2c447d2fb'
+            'x-rapidapi-host': apiHost,
+            'x-rapidapi-key': bookingApiKey
         },
         data
     })
@@ -119,7 +121,7 @@ function getEURExchangeRate(){
     $.ajax({
         method: "GET",
         async: true,
-        url: 'https://v6.exchangerate-api.com/v6/4c0b515b45ea357d785ed835/latest/EUR'
+        url: euroExchangeRatesURL
     })
     .done(response => {
         euroConversionRates = response.conversion_rates;
