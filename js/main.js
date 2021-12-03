@@ -104,9 +104,10 @@ $('#search-hotels').click(async function () {
     let adults = $('#adults').val();
     let rooms = $('#rooms').val();
     let isAdultsAndRoomValid = adults >= 1 && rooms >= 1;
+    const currency = $('.currency-select').val();
 
     if (isDestinationValid && !isCheckinInvalid && !isCheckoutInvalid && isAdultsAndRoomValid) {
-        window.location.href = `hotels.html?destination=${destination["label"]}&dest_id=${destination["dest_id"]}&dest_type=${destination["dest_type"]}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&rooms=${rooms}`;
+        window.location.href = `hotels.html?destination=${destination["label"]}&dest_id=${destination["dest_id"]}&dest_type=${destination["dest_type"]}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&rooms=${rooms}&currency=${currency}`;
     }
 
     return false;
@@ -145,7 +146,7 @@ function getTravelAdvisoryInfo(){
         console.log(response);
     })
     .always(() => {
-        console.log('ajax completed');
+        console.log('travl advisory ajax completed');
     })
 }
 
