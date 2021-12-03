@@ -1,8 +1,9 @@
-
-const baseUrl = 'https://booking-com.p.rapidapi.com/v1/hotels/';
-var locale = "en-gb";
-
+const baseHotelsUrl = 'https://booking-com.p.rapidapi.com/v1/hotels/';
 const travelAdvisoryInfoURL = 'https://www.travel-advisory.info/api';
+const apiHost = 'booking-com.p.rapidapi.com';
+const bookingApiKey = '7319e31318msh37155d5db3d4508p196adajsn712abe4b8c9d';
+
+var locale = "en-gb";
 let travelAdvisoryInfo = [];
 let travelInfo = [];
 
@@ -65,14 +66,13 @@ function getLocationData() {
     if (location != "") {
         route = `locations?locale=${locale}&name=${location}`;
     }
-    // console.log(`${baseUrl}${route}`);
     return $.ajax({
         method: "GET",
-        url: `${baseUrl}${route}`,
+        url: `${baseHotelsUrl}${route}`,
         async: true,
         headers: {
-            'x-rapidapi-host': 'booking-com.p.rapidapi.com',
-            'x-rapidapi-key': '18478709b4msh25f760bdd13c2f9p19b5f2jsn61b2c447d2fb'
+            'x-rapidapi-host': apiHost,
+            'x-rapidapi-key': bookingApiKey
         }
     })
 }
@@ -100,14 +100,31 @@ $('#search-hotels').click(async function () {
     let checkout = dateRange['checkout'];
     let isCheckinInvalid = moment(checkin).isBefore(moment(new Date()).format('YYYY-MM-DD'));
     let isCheckoutInvalid = moment(checkout).isBefore(moment(new Date()).add(1, 'days').format('YYYY-MM-DD'));
-
+    let isCheckoutBeforeCheckin = moment(checkout).isBefore(moment(checkin).format('YYYY-MM-DD'));
     let adults = $('#adults').val();
     let rooms = $('#rooms').val();
     let isAdultsAndRoomValid = adults >= 1 && rooms >= 1;
     const currency = $('.currency-select').val();
 
-    if (isDestinationValid && !isCheckinInvalid && !isCheckoutInvalid && isAdultsAndRoomValid) {
+    if (isDestinationValid && !isCheckinInvalid && !isCheckoutInvalid && !isCheckoutBeforeCheckin && isAdultsAndRoomValid) {
         window.location.href = `hotels.html?destination=${destination["label"]}&dest_id=${destination["dest_id"]}&dest_type=${destination["dest_type"]}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&rooms=${rooms}&currency=${currency}`;
+    }
+    else{
+        if(!isDestinationValid){
+            alert("Please enter a location.");
+        }
+        else if(isCheckinInvalid){
+            alert("Checkin date is not valid. Please try again with a valid date!");
+        }
+        else if(isCheckoutInvalid){
+            alert("Checkin date is not valid. Please try again with a valid date!");
+        }
+        else if(isCheckoutBeforeCheckin){
+            alert("Checkout cannot be before checkin!");
+        }
+        else if(!isAdultsAndRoomValid){
+            alert("Please choose valid adults and room count.");
+        }
     }
 
     return false;
@@ -133,7 +150,7 @@ function getTravelAdvisoryInfo(){
     $.ajax({
         method: "GET",
         async: true,
-        url: `${travelAdvisoryInfoURL}`,
+        url: travelAdvisoryInfoURL
     })
     .done(response => {
         travelAdvisoryInfo = response.data;
@@ -146,7 +163,7 @@ function getTravelAdvisoryInfo(){
         console.log(response);
     })
     .always(() => {
-        console.log('travl advisory ajax completed');
+        console.log('travel advisory ajax completed');
     })
 }
 
@@ -155,8 +172,6 @@ getTravelAdvisoryInfo();
 
 setInterval(function() {
     var rand = Math.floor(Math.random() * travelInfo.length);
-    // console.log(rand);
-    // console.log(travelInfo[rand]);
     colorDivByRiskLevel(travelInfo[rand]["advisory"]["score"]);
     $(".country-name").text(travelInfo[rand]["name"]);
     $(".advisory-message").text(travelInfo[rand]["advisory"]["message"]);
